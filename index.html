@@ -22,10 +22,71 @@
     <button id="saveName">Save Name</button>
   </div>
 
+  <div id="visits"></div>
 
   <script>
+    function getCookie(name) {
+        const cookies = document.cookie.split("; ");
+        for (let c of cookies) {
+            const [key, value] = c.split("=");
+            if (key === name) return value;
+        }
+        return null;
+    }
 
-  
+// Check if a username cookie already exists
+const savedName = getCookie('username');
+const greetingDiv = document.getElementById('greeting');
+const formDiv = document.getElementById('nameForm');
+
+if(savedName) {
+    // If cookie found, greet the user and hide the form
+    greetingDiv.textContent = "Welcome back, " + savedName + "!";
+    formDiv.style.display = 'none';
+}
+
+document.getElementById('saveName').addEventListener('click', () => {
+    const nameValue = document.getElementById('nameInput').value;
+    if (nameValue) {
+        // Set a cookie "username=<name>" that lasts 30 days and is available site wide
+        const expiry = new Date();
+        expiry.setTime(expiry.getTime + 30*24*60*60*1000); // 30 days from now
+        document.cookie = "username=" + encodeURIComponent(nameValue) + ";" + "expires=" + expiry.toUTCString + "; path=/";
+
+    }
+
+
+// Update greeting
+    greetingDiv.textContent = "Hello, " + nameValue + "! Nice to meet you";
+    formDiv.style.display = 'none'; // Hide the form after saving
+})
+
+
+
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+}
+
+// Check if a username cookie already exists
+let visitsCookie = getCookie('visits');
+//if there already is a visits cookie, increase value by 1 and save
+let visitsCount;
+if(visitsCookie) {
+    visitsCount = Number(visitsCookie) + 1;
+} else {
+    visitsCount = 1;
+}
+
+document.cookie = "visits=" + encodeURIComponent(visitsCount) + ";";
+// show visits on page
+const visitsElement = document.getElementById("visits");
+visitsElement.textContent = "Visits: " + visitsCount;
+
+
   </script>
 
 </body>
